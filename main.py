@@ -2,6 +2,9 @@ import time
 
 import mediapipe as mp
 import cv2
+from controller import Controller
+
+ctrl = Controller()
 
 BaseOptions = mp.tasks.BaseOptions
 GestureRecognizer = mp.tasks.vision.GestureRecognizer
@@ -14,16 +17,25 @@ base_options = BaseOptions(
 
 feed = cv2.VideoCapture(0)
 timestamp = 0
+last_recognised_gesture = ''
 
 
-def print_result(result: GestureRecognizerResult, output_image: mp.Image, timestamp_ms: int):
+def handle_result(result: GestureRecognizerResult, output_image: mp.Image, timestamp_ms: int):
     print('gesture recognition result: {}'.format(result))
+
+    global last_recognised_gesture
+
+    if len(result.gestures) == 0 or result.gestures[0][0].category_name == last_recognised_gesture or result.gestures[0][0].category_name == 'None':
+        return
+
+    last_recognised_gesture = result.gestures[0][0].category_name
+    ctrl.issue_command(last_recognised_gesture)
 
 
 options = GestureRecognizerOptions(
     base_options=base_options,
     running_mode=VisionRunningMode.LIVE_STREAM,
-    result_callback=print_result)
+    result_callback=handle_result)
 
 with GestureRecognizer.create_from_options(options) as recognizer:
     while True:
@@ -33,8 +45,6 @@ with GestureRecognizer.create_from_options(options) as recognizer:
             break
 
         timestamp += 1
-
-        # cv2.imshow('frame', frame)
 
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
         recognizer.recognize_async(mp_image, timestamp)

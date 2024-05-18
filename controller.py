@@ -2,33 +2,40 @@ import os
 
 
 class Controller:
-    def switch_desktop_left(self):
-        pass
+    def __init__(self):
+        self.COMMANDS = {
+            'Closed_Fist': self.__scroll_down,
+            'Open_Palm': self.__view_windows,
+            'Pointing_Up': self.__space_bar,
+            'Thumb_Down': self.__switch_desktop_left,
+            'Thumb_Up': self.__switch_desktop_right,
+            'Victory': self.__zoom_out,
+            'ILoveYou': self.__zoom_in
+        }
 
-    def switch_desktop_right(self):
-        pass
+    def issue_command(self, gesture):
+        self.COMMANDS[gesture]()
 
-    def space_bar(self):
-        pass
+    def __switch_desktop_left(self):
+        os.system("osascript -e 'tell application \"System Events\" to key code  123  using control down'")
 
-    def scroll_down(self):
-        pass
+    def __switch_desktop_right(self):
+        os.system("osascript -e 'tell application \"System Events\" to key code  124  using control down'")
 
-    def scroll_up(self):
-        pass
+    def __view_windows(self):
+        os.system("osascript -e 'tell application \"System Events\" to key code  160  '")
 
-    def zoom_out(self):
-        pass
+    def __space_bar(self):
+        os.system("osascript -e 'tell application \"System Events\" to key code  49  '")
 
-    def zoom_in(self):
-        pass
+    def __scroll_down(self):
+        return
 
-    COMMANDS = {
-        'wave_right': switch_desktop_left,
-        'wave_left': switch_desktop_right,
-        'stop_gesture': space_bar,
-        'two_fingers_up': scroll_up,
-        'two_fingers_down': scroll_down,
-        'pinch': zoom_out,
-        'release_pinch': zoom_in
-    }
+    def __scroll_up(self):
+        return
+
+    def __zoom_out(self):
+        return
+
+    def __zoom_in(self):
+        return
