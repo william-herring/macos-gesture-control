@@ -13,8 +13,12 @@ class Controller:
             'ILoveYou': self.__zoom_in
         }
 
-    def issue_command(self, gesture):
+        self.last_recognised_gesture = ''
+        self.last_timestamp = 0
+
+    def command(self, gesture: str, timestamp: int):
         self.COMMANDS[gesture]()
+        self.last_recognised_gesture = gesture
 
     def __switch_desktop_left(self):
         os.system("osascript -e 'tell application \"System Events\" to key code  123  using control down'")
@@ -29,7 +33,10 @@ class Controller:
         os.system("osascript -e 'tell application \"System Events\" to key code  49  '")
 
     def __scroll_down(self):
-        return
+        if self.last_recognised_gesture == 'Open_Palm':
+            self.__view_windows()
+        else:
+            return
 
     def __scroll_up(self):
         return

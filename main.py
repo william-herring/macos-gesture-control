@@ -22,14 +22,13 @@ last_recognised_gesture = ''
 
 def handle_result(result: GestureRecognizerResult, output_image: mp.Image, timestamp_ms: int):
     print('gesture recognition result: {}'.format(result))
-
     global last_recognised_gesture
 
     if len(result.gestures) == 0 or result.gestures[0][0].category_name == last_recognised_gesture or result.gestures[0][0].category_name == 'None':
         return
 
     last_recognised_gesture = result.gestures[0][0].category_name
-    ctrl.issue_command(last_recognised_gesture)
+    ctrl.command(last_recognised_gesture, timestamp_ms)
 
 
 options = GestureRecognizerOptions(
